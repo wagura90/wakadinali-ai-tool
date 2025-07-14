@@ -1,0 +1,90 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Wakadinali AI Tool</title>
+  <style>
+    body {
+      background-color: #111;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+    }
+    h1 {
+      color: #00ff99;
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    textarea {
+      width: 100%;
+      max-width: 500px;
+      height: 100px;
+      padding: 1rem;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 10px;
+      border: none;
+    }
+    button {
+      background-color: #00ff99;
+      color: #000;
+      border: none;
+      padding: 1rem 2rem;
+      margin: 0.5rem;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 10px;
+    }
+    .output {
+      margin-top: 2rem;
+      max-width: 600px;
+    }
+    img {
+      max-width: 100%;
+      border-radius: 10px;
+      box-shadow: 0 0 15px #00ff99;
+    }
+  </style>
+</head>
+<body>
+  <h1>Wakadinali AI Tool</h1>
+  <textarea id="prompt" placeholder="Describe the product you want visuals for..."></textarea>
+  <div>
+    <button onclick="generateImage()">Generate Photo</button>
+  </div>
+  <div class="output" id="output"></div>
+
+  <script>
+    async function generateImage() {
+      const prompt = document.getElementById('prompt').value;
+      const outputDiv = document.getElementById('output');
+      outputDiv.innerHTML = '🛠️ Generating image... Please wait...';
+
+      try {
+        const response = await fetch('/generate-image', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ prompt })
+        });
+
+        const data = await response.json();
+        if (data.url) {
+          outputDiv.innerHTML = `<img src="${data.url}" alt="Generated Image" />`;
+        } else {
+          outputDiv.innerHTML = '❌ Image generation failed.';
+        }
+      } catch (error) {
+        outputDiv.innerHTML = "❌ Failed to generate image. Try again.";
+        console.error(error);
+      }
+    }
+  </script>
+</body>
+</html>
